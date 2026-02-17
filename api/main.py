@@ -76,7 +76,8 @@ def read_root(request: Request):
         "status": "ok", 
         "message": "Image Processing API is running",
         "debug_origin": origin,
-        "allowed_origins": origins
+        "allowed_origins": origins,
+        "debug_redirect_uri": os.environ.get("GOOGLE_REDIRECT_URI")
     }
 
 @app.get("/api/auth/login")
