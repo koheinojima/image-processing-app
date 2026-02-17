@@ -212,6 +212,7 @@ def get_status():
     if processor_instance:
         return {
             "status": processor_instance.status,
+            "status_message": processor_instance.status_message,
             "logs": processor_instance.logs,
             "result_links": processor_instance.result_links,
             "progress": {
@@ -219,7 +220,7 @@ def get_status():
                 "total": processor_instance.total_files
             }
         }
-    return {"status": "idle", "logs": [], "result_links": None, "progress": None}
+    return {"status": "idle", "status_message": "待機中", "logs": [], "result_links": None, "progress": None}
 
 if __name__ == "__main__":
     import uvicorn

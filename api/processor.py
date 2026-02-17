@@ -28,6 +28,7 @@ class ImageProcessor:
         self.credentials_data = credentials_data
         self.logs = []
         self.status = "idle"
+        self.status_message = "待機中"
         self.service_drive = None
         self.service_sheets = None
         self.face_detector = None
