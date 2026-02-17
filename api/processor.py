@@ -149,8 +149,8 @@ class ImageProcessor:
             if len(bg_color) == 4:
                 bg_color = bg_color[:3]
                 
-            # Fallback to white if background is too dark or strange
-            if not bg_color or (isinstance(bg_color, tuple) and sum(bg_color) < 20):
+            # Fallback to white only if color detection fails completely
+            if not bg_color:
                  bg_color = (255, 255, 255)
             bg_log = str(bg_color)
 
@@ -491,19 +491,14 @@ class ImageProcessor:
         query = f"'{input_id}' in parents and mimeType contains 'image/' and trashed = false"
         files = self.service_drive.files().list(q=query).execute().get('files', [])
 
-        if type_name == "photos":
-             self.total_files += len(files)
-        else: # logos also count towards progress in this unified flow
-             self.total_files += len(files)
+        self.total_files += len(files)
 
         for i, f_info in enumerate(files):
             if self.stop_requested:
                 self.log("停止リクエストを受信しました。処理を中断します。")
                 break
             
-            # Progress update (simplified for photo focus first)
-            if type_name == "photos":
-                 self.processed_count += 1
+            self.processed_count += 1
             
             img_name = f_info['name']
             self.log(f"処理中 ({self.processed_count}/{self.total_files}): {img_name}")
