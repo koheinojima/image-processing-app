@@ -418,7 +418,7 @@ class ImageProcessor:
     def run_process(self):
         try:
             self.status = "running"
-            self.log("処理を開始します...")
+            self.log("バックグラウンド処理を開始しました...")
             self.authenticate()
             self.log("Google認証に成功しました。")
 

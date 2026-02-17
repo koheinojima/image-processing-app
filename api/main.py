@@ -211,6 +211,8 @@ def stop_process():
 def get_status():
     global processor_instance
     if processor_instance:
+        # Debug logging for progress issues
+        print(f"DEBUG /api/status: status={processor_instance.status}, processed={processor_instance.processed_count}, total={processor_instance.total_files}")
         return {
             "status": processor_instance.status,
             "status_message": processor_instance.status_message,

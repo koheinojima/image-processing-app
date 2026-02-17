@@ -145,6 +145,7 @@ export default function Home() {
             setStatus('stopped');
             clearInterval(interval);
           }
+          console.log("Status update received:", res.data);
         } catch (e) {
           console.error("Polling error", e);
         }
@@ -320,16 +321,16 @@ export default function Home() {
           </div>
 
           {/* Progress Bar */}
-          {status === 'running' && progress && progress.total > 0 && (
+          {status === 'running' && progress && (
             <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
               <div className="flex justify-between text-xs text-slate-400 mb-2 uppercase font-bold tracking-wider">
                 <span>Progress</span>
-                <span>{Math.round((progress.processed / progress.total) * 100)}%</span>
+                <span>{progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0}%</span>
               </div>
               <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
-                  style={{ width: `${(progress.processed / progress.total) * 100}%` }}
+                  style={{ width: `${progress.total > 0 ? (progress.processed / progress.total) * 100 : 0}%` }}
                 />
               </div>
             </div>
