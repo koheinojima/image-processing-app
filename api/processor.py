@@ -363,17 +363,23 @@ class ImageProcessor:
     def run_process(self):
         try:
             self.status = "running"
+            self.log("処理を開始します...")
             self.authenticate()
+            self.log("Google認証に成功しました。")
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M")
             project_title = self.config["project_name"]
             
+            self.log(f"出力フォルダを作成中: {project_title}...")
             run_folder_id = self.create_drive_folder(f"【{project_title}】_{timestamp}", self.config["output_root_folder_id"])
+            self.log(f"出力フォルダを作成完了 (ID: {run_folder_id})")
             
             if self.config["spreadsheet_id"]:
+                self.log("スプレッドシートを準備中...")
                 ss = self.service_sheets.open_by_key(self.config["spreadsheet_id"])
                 worksheet = ss.add_worksheet(title=f"{project_title}_{timestamp}", rows="100", cols="7")
                 worksheet.append_row(["プレビュー", "ファイル名", "詳細処理内容", "種類", "ファイルID", "URL", "処理日時"])
+                self.log("スプレッドシートの準備が完了しました。")
             else:
                 ss = None
                 worksheet = None
