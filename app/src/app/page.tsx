@@ -69,7 +69,7 @@ export default function Home() {
       }
     } catch (e) {
       console.error("Login failed", e);
-      alert("Login request failed. Server might be sleeping, please try again in a minute.");
+      alert(`Login request failed.\nTarget: ${baseUrl}\nError: ${String(e)}\n\nAPIのURLが "https://" で始まっているか、Vercelの環境変数が正しいか確認してください。`);
       setIsLoggingIn(false);
     }
   };

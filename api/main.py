@@ -40,8 +40,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Session Middleware for auth (SECRET_KEY should be in env for prod)
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SECRET_KEY", "dev_secret_key_12345"))
+# Session Middleware for auth
+# same_site="none" and https_only=True are required for cross-domain cookies (Vercel -> Render)
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=os.environ.get("SECRET_KEY", "dev_secret_key_12345"),
+    same_site="none",
+    https_only=True
+)
 
 SCOPES = [
     'https://www.googleapis.com/auth/drive',
