@@ -42,7 +42,7 @@ export default function Home() {
 
         const res = await axios.get(`${baseUrl}/api/auth/check`, {
           withCredentials: true,
-          timeout: 5000
+          timeout: 60000 // Increase to 60 seconds for Render cold start
         });
         setIsAuthenticated(res.data.authenticated);
       } catch (e) {
