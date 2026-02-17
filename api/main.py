@@ -69,8 +69,15 @@ class Config(BaseModel):
 processor_instance = None
 
 @app.get("/")
-def read_root():
-    return {"status": "ok", "message": "Image Processing API is running"}
+def read_root(request: Request):
+    origin = request.headers.get("origin")
+    print(f"DEBUG: Incoming request from origin: {origin}")
+    return {
+        "status": "ok", 
+        "message": "Image Processing API is running",
+        "debug_origin": origin,
+        "allowed_origins": origins
+    }
 
 @app.get("/api/auth/login")
 def login(request: Request):

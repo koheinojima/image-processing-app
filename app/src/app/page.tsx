@@ -60,7 +60,10 @@ export default function Home() {
   const handleLogin = async () => {
     setIsLoggingIn(true);
     try {
-      const res = await axios.get(`${baseUrl}/api/auth/login`, { timeout: 60000 });
+      const res = await axios.get(`${baseUrl}/api/auth/login`, {
+        timeout: 60000,
+        withCredentials: true
+      });
       if (res.data.url) {
         window.location.href = res.data.url;
       } else {
