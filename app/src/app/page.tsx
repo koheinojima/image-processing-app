@@ -83,7 +83,18 @@ export default function Home() {
     const saved = localStorage.getItem('image_proc_config');
     if (saved) {
       try {
-        setConfig(prev => ({ ...prev, ...JSON.parse(saved) }));
+        const parsed = JSON.parse(saved);
+        // Migration logic for common form refactor
+        if (parsed.input_photo_folder_id && !parsed.input_folder_id) {
+          parsed.input_folder_id = parsed.input_photo_folder_id;
+        } else if (parsed.input_logo_folder_id && !parsed.input_folder_id) {
+          parsed.input_folder_id = parsed.input_logo_folder_id;
+        }
+
+        if (parsed.photo_width && !parsed.width) parsed.width = parsed.photo_width;
+        if (parsed.photo_height && !parsed.height) parsed.height = parsed.photo_height;
+
+        setConfig(prev => ({ ...prev, ...parsed }));
       } catch (e) {
         console.error("Failed to load config", e);
       }
