@@ -67,7 +67,7 @@ export default function Home() {
       if (res.data.url) {
         window.location.href = res.data.url;
       } else {
-        alert("Login URL could not be retrieved");
+        alert("Login URL could not be retrieved: " + (res.data.error || "Unknown server error"));
         setIsLoggingIn(false);
       }
     } catch (e) {
