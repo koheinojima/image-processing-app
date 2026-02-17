@@ -57,13 +57,14 @@ SCOPES = [
 
 class Config(BaseModel):
     project_name: str
-    input_photo_folder_id: str
-    input_logo_folder_id: str
+    input_folder_id: str
     output_root_folder_id: str
-    spreadsheet_id: str
-    photo_width: int
-    photo_height: int
-    force_contain_mode: bool
+    spreadsheet_id: str = ""
+    width: int
+    height: int
+    logo_safe_area: float = 0.8
+    force_contain_mode: bool = False
+    processing_mode: str = "photos"
 
 # Global instance to hold state
 processor_instance = None
