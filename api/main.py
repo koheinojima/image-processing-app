@@ -137,7 +137,11 @@ def login(request: Request):
             "debug_redirect_uri_used": redirect_uri
         }
         
-    authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
+    authorization_url, state = flow.authorization_url(
+        access_type='offline', 
+        include_granted_scopes='true',
+        prompt='consent'
+    )
     request.session['state'] = state
     return {"url": authorization_url, "debug_redirect_uri_used": redirect_uri}
 

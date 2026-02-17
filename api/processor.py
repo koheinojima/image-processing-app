@@ -57,23 +57,24 @@ class ImageProcessor:
             if os.path.exists('token.json'):
                 creds = Credentials.from_authorized_user_file('token.json', SCOPES)
             
-            if not creds or not creds.valid:
-                if creds and creds.expired and creds.refresh_token:
-                    try:
-                        creds.refresh(Request())
-                    except Exception as e:
-                        self.log(f"Token refresh failed: {e}")
-                
-                if not creds:
-                    if not os.path.exists('credentials.json') and not self.credentials_data:
-                        raise Exception("認証情報が見つかりません。セッションが切れている可能性があります。")
-                    
-                    if os.path.exists('credentials.json'):
-                        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-                        creds = flow.run_local_server(port=0)
-                # Save the credentials for the next run (only in local mode)
+        if not creds:
+            if not os.path.exists('credentials.json') and not self.credentials_data:
+                raise Exception("認証情報が見つかりません。一度ログアウトして再度ログインしてください。")
+            
+            if os.path.exists('credentials.json') and not self.credentials_data:
+                flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+                creds = flow.run_local_server(port=0)
                 with open('token.json', 'w') as token:
                     token.write(creds.to_json())
+        
+        if creds and creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                self.log(f"トークンの更新に失敗しました: {e}")
+                raise Exception("トークンの更新に失敗しました。再度ログインしてください。")
+        elif creds and creds.expired and not creds.refresh_token:
+            raise Exception("リフレッシュトークンが見つかりません。一度ログアウトして再度ログインしてください。")
 
         self.service_drive = build('drive', 'v3', credentials=creds)
         self.service_sheets = gspread.authorize(creds)
