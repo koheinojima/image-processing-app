@@ -124,6 +124,51 @@ class ImageProcessor:
 
         return results
 
+    def process_logo_smart(self, img, target_w, target_h, safe_area=0.8, fmt="PNG"):
+        img = ImageOps.exif_transpose(img)
+        orig_w, orig_h = img.size
+        
+        # Whitespace crop
+        bbox = img.getbbox()
+        if bbox:
+            img = img.crop(bbox)
+            crop_info = f"余白カット({orig_w}x{orig_h}→{img.size[0]}x{img.size[1]})"
+        else:
+            crop_info = "余白カットなし"
+
+        # Transparency check
+        is_transparent = (img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info))
+        
+        if is_transparent and fmt.upper() == "PNG":
+            canvas_mode = "RGBA"
+            bg_color = (0, 0, 0, 0)
+            bg_log = "透明"
+        else:
+            canvas_mode = "RGB"
+            bg_color = self.get_edge_most_common_color(img, is_logo=True)
+            if len(bg_color) == 4:
+                bg_color = bg_color[:3]
+                
+            # Fallback to white if background is too dark or strange
+            if not bg_color or (isinstance(bg_color, tuple) and sum(bg_color) < 20):
+                 bg_color = (255, 255, 255)
+            bg_log = str(bg_color)
+
+        self.last_process_log = f"【ロゴ配置】{crop_info} / 採用背景色:{bg_log}"
+
+        res = Image.new(canvas_mode, (target_w, target_h), bg_color)
+        
+        sw, sh = int(target_w * safe_area), int(target_h * safe_area)
+        if img.width > 0 and img.height > 0:
+            ratio = min(sw / img.width, sh / img.height)
+            new_w, new_h = int(img.width * ratio), int(img.height * ratio)
+            img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+            
+            mask = img if img.mode == 'RGBA' else None
+            res.paste(img, ((target_w - new_w) // 2, (target_h - new_h) // 2), mask)
+            
+        return res
+
     def get_edge_most_common_color(self, img, is_logo=True):
         tmp_img = img.convert("RGB")
         pixels = np.array(tmp_img)
@@ -385,9 +430,13 @@ class ImageProcessor:
             self.log(f"出力フォルダを作成完了 (ID: {run_folder_id})")
             
             if self.config["spreadsheet_id"]:
-                self.log("スプレッドシートを準備中...")
+                self.log(f"スプレッドシートを開いています (ID: {self.config['spreadsheet_id']})...")
                 ss = self.service_sheets.open_by_key(self.config["spreadsheet_id"])
+                
+                self.log("新しいワークシートを作成中...")
                 worksheet = ss.add_worksheet(title=f"{project_title}_{timestamp}", rows="100", cols="7")
+                
+                self.log("ヘッダー行を書き込み中...")
                 worksheet.append_row(["プレビュー", "ファイル名", "詳細処理内容", "種類", "ファイルID", "URL", "処理日時"])
                 self.log("スプレッドシートの準備が完了しました。")
             else:
@@ -401,10 +450,10 @@ class ImageProcessor:
                 self.log("写真フォルダを処理中...")
                 self.process_folder(self.config["input_photo_folder_id"], run_folder_id, "photos", records)
 
-            # Process Logos (Simplified port for brevity, focusing on photo logic first based on request, but adding hook)
+            # Process Logos
             if self.config["input_logo_folder_id"]:
-                self.log("ロゴフォルダを処理中...")
-                # self.process_folder(self.config["input_logo_folder_id"], run_folder_id, "logos", records)
+                self.log(f"ロゴフォルダをスキャン中 (ID: {self.config['input_logo_folder_id']})...")
+                self.process_folder(self.config["input_logo_folder_id"], run_folder_id, "logos", records)
 
             if records and worksheet:
                 worksheet.append_rows(records, value_input_option='USER_ENTERED')
@@ -466,10 +515,21 @@ class ImageProcessor:
                 fh.seek(0)
                 img = Image.open(fh)
 
-                # Photo logic
-                res = self.process_photo_smart(img, int(self.config["photo_width"]), int(self.config["photo_height"]))
+                # Process based on type
+                if type_name == "photos":
+                    res = self.process_photo_smart(img, int(self.config["photo_width"]), int(self.config["photo_height"]))
+                    fmt = "JPEG"
+                else: # logos
+                    res = self.process_logo_smart(
+                        img, 
+                        int(self.config["logo_width"]), 
+                        int(self.config["logo_height"]),
+                        safe_area=float(self.config.get("logo_safe_area", 0.8)),
+                        fmt="PNG"
+                    )
+                    fmt = "PNG"
                 
-                new_id, direct_link = self.upload_image_to_drive(res, img_name, out_sub_id, "JPEG")
+                new_id, direct_link = self.upload_image_to_drive(res, img_name, out_sub_id, fmt)
                 
                 records.append([
                     f'=IMAGE("{direct_link}")', 
