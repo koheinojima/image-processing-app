@@ -14,7 +14,8 @@ export default function Home() {
     spreadsheet_id: "",
     photo_width: 900,
     photo_height: 600,
-    force_contain_mode: false
+    force_contain_mode: false,
+    processing_mode: "both" // both, photos, logos
   });
 
   const [status, setStatus] = useState('idle'); // idle, running, completed, error, stopped
@@ -210,6 +211,30 @@ export default function Home() {
             </h2>
 
             <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">処理モード (Processing Mode)</label>
+                <div className="flex bg-slate-700/50 p-1 rounded-xl gap-1">
+                  {[
+                    { id: 'both', label: '両方', desc: 'Both' },
+                    { id: 'photos', label: '写真', desc: 'Photos' },
+                    { id: 'logos', label: 'ロゴ', desc: 'Logos' }
+                  ].map((m) => (
+                    <button
+                      key={m.id}
+                      onClick={() => setConfig({ ...config, processing_mode: m.id })}
+                      className={clsx(
+                        "flex-1 py-2 rounded-lg text-sm font-bold transition-all",
+                        config.processing_mode === m.id
+                          ? "bg-indigo-500 text-white shadow-lg"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-700"
+                      )}
+                    >
+                      {m.label} <span className="text-[10px] opacity-60 ml-0.5">{m.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <InputGroup label="プロジェクト名" placeholder="例: 2024_Spring_Campaign" value={config.project_name} onChange={v => setConfig({ ...config, project_name: v })} />
               <InputGroup label="写真フォルダID" placeholder="Google Drive Folder ID" value={config.input_photo_folder_id} onChange={v => setConfig({ ...config, input_photo_folder_id: v })} />
               <InputGroup label="ロゴフォルダID" placeholder="(任意) Google Drive Folder ID" value={config.input_logo_folder_id} onChange={v => setConfig({ ...config, input_logo_folder_id: v })} />

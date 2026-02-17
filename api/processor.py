@@ -445,13 +445,15 @@ class ImageProcessor:
 
             records = []
              
+            mode = self.config.get("processing_mode", "both")
+
             # Process Photos
-            if self.config["input_photo_folder_id"]:
+            if (mode == "both" or mode == "photos") and self.config["input_photo_folder_id"]:
                 self.log("写真フォルダを処理中...")
                 self.process_folder(self.config["input_photo_folder_id"], run_folder_id, "photos", records)
 
             # Process Logos
-            if self.config["input_logo_folder_id"]:
+            if (mode == "both" or mode == "logos") and self.config["input_logo_folder_id"]:
                 self.log(f"ロゴフォルダをスキャン中 (ID: {self.config['input_logo_folder_id']})...")
                 self.process_folder(self.config["input_logo_folder_id"], run_folder_id, "logos", records)
 
