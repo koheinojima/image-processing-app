@@ -13,9 +13,17 @@ from google.oauth2.credentials import Credentials
 app = FastAPI(title="Image Processing API")
 
 # Allow CORS for frontend
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    os.environ.get("FRONTEND_URL", "").strip(),
+]
+# Remove empty strings
+origins = [o for o in origins if o]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
