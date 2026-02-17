@@ -6,20 +6,31 @@ from pydantic import BaseModel
 import asyncio
 import os
 import json
-from processor import ImageProcessor
+try:
+    from api.processor import ImageProcessor
+except ImportError:
+    from processor import ImageProcessor
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 
 app = FastAPI(title="Image Processing API")
 
 # Allow CORS for frontend
+fe_url = os.environ.get("FRONTEND_URL", "").strip()
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    os.environ.get("FRONTEND_URL", "").strip(),
 ]
-# Remove empty strings
-origins = [o for o in origins if o]
+if fe_url:
+    origins.append(fe_url)
+    # Also add version without trailing slash if it has one, or vice versa
+    if fe_url.endswith("/"):
+        origins.append(fe_url[:-1])
+    else:
+        origins.append(fe_url + "/")
+
+# Remove empty/duplicate strings
+origins = list(set([o for o in origins if o]))
 
 app.add_middleware(
     CORSMiddleware,

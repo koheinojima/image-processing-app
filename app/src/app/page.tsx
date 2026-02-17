@@ -55,17 +55,22 @@ export default function Home() {
     checkAuth();
   }, []);
 
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const handleLogin = async () => {
+    setIsLoggingIn(true);
     try {
-      const res = await axios.get(`${baseUrl}/api/auth/login`);
+      const res = await axios.get(`${baseUrl}/api/auth/login`, { timeout: 60000 });
       if (res.data.url) {
         window.location.href = res.data.url;
       } else {
         alert("Login URL could not be retrieved");
+        setIsLoggingIn(false);
       }
     } catch (e) {
       console.error("Login failed", e);
-      alert("Login request failed");
+      alert("Login request failed. Server might be sleeping, please try again in a minute.");
+      setIsLoggingIn(false);
     }
   };
 

@@ -177,3 +177,6 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
  GET /?authenticated=true 200 in 36ms (compile: 1092µs, render: 35ms)
 ✓ Compiled in 330ms
 ✓ Compiled in 31ms
+✓ Compiled in 40ms
+ GET / 200 in 332ms (compile: 219ms, render: 113ms)
+ GET / 200 in 53ms (compile: 5ms, render: 47ms)
