@@ -39,8 +39,11 @@ class ImageProcessor:
         self.stop_requested = False
 
     def log(self, message):
-        print(message)
-        self.logs.append(message)
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        full_msg = f"[{timestamp}] {message}"
+        print(full_msg)
+        self.logs.append(full_msg)
+        self.status_message = message
 
     def authenticate(self):
         """Authenticates with Google using passed credentials or local file."""
@@ -80,10 +83,16 @@ class ImageProcessor:
         filename = "face_detection_yunet_2023mar.onnx"
         url = "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
         if not os.path.exists(filename):
-            self.log(f"モデルをダウンロード中: {filename}...")
-            r = requests.get(url)
-            with open(filename, 'wb') as f:
-                f.write(r.content)
+            self.log(f"顔検出モデルをダウンロード中: {filename}...")
+            try:
+                r = requests.get(url, timeout=30)
+                r.raise_for_status()
+                with open(filename, 'wb') as f:
+                    f.write(r.content)
+                self.log("モデルのダウンロードが完了しました。")
+            except Exception as e:
+                self.log(f"モデルのダウンロードに失敗しました: {e}")
+                raise
         return filename
 
     def detect_faces_yunet(self, pil_img):
