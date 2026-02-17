@@ -238,7 +238,7 @@ class ImageProcessor:
         img_res = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
         bg = self.get_edge_most_common_color(img, is_logo=False)
 
-        self.last_process_log = f"【全体表示】{src_w}x{src_h} -> {new_w}x{new_h} / 理由:{reason}"
+        self.last_process_log = f"【全体補完】元{src_w}x{src_h} → 新{new_w}x{new_h} / 理由:{reason}"
 
         canvas = Image.new("RGB", (target_w, target_h), bg)
         canvas.paste(img_res, ((target_w - new_w) // 2, (target_h - new_h) // 2))
@@ -291,19 +291,21 @@ class ImageProcessor:
             img_res = sq_crop.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
             bg = self.get_edge_most_common_color(sq_crop, is_logo=False)
-            self.last_process_log = f"【正方形代替処理】理由:{prev_reason} / 背景色:{bg}"
+            reference_y = faces[0][1] if len(faces) == 1 else top_y
+            actual_pos_ratio = (reference_y - sq_y1) / sq_size
+            self.last_process_log = f"【正方形ﾌｫｰﾙﾊﾞｯｸ】上から{actual_pos_ratio*100:.1f}% / 元NG({prev_reason}) / 背景色:{bg}"
 
             canvas = Image.new("RGB", (target_w, target_h), bg)
             canvas.paste(img_res, ((target_w - new_w) // 2, (target_h - new_h) // 2))
             return canvas
         else:
-            return self.process_contain_mode(img, target_w, target_h, f"正方形検証NG({reason}) -> 全体表示")
+            return self.process_contain_mode(img, target_w, target_h, f"正方形検証NG({reason}) → 全体補完")
 
     def process_photo_smart(self, img, target_w, target_h):
         img = ImageOps.exif_transpose(img)
 
         if self.config.get("force_contain_mode", False):
-            return self.process_contain_mode(img, target_w, target_h, "強制全体表示")
+            return self.process_contain_mode(img, target_w, target_h, "強制設定(クロップなし)")
 
         img_w, img_h = img.size
         # Protection against 0 devision
@@ -320,7 +322,7 @@ class ImageProcessor:
 
         if not safe_zone:
             x1, y1 = (img_w - crop_w) // 2, (img_h - crop_h) // 2
-            self.last_process_log = f"【中央切り抜き】{img_w}x{img_h} -> ({x1},{y1}) / 顔検出なし"
+            self.last_process_log = f"【中央クロップ】元{img_w}x{img_h} / 座標:({x1},{y1}) / 顔未検出"
             return img.crop((x1, y1, x1 + crop_w, y1 + crop_h)).resize((target_w, target_h), Image.Resampling.LANCZOS)
 
         sx1, sy1, sx2, sy2 = safe_zone
@@ -354,10 +356,11 @@ class ImageProcessor:
             is_valid, reason = self.verify_cropped_image(test_crop, 1)
 
             if is_valid:
-                self.last_process_log = f"【スマート単独】OK"
+                actual_pos_ratio = (fy - y1) / crop_h
+                self.last_process_log = f"【首元切れ防止】元{img_w}x{img_h} / 調整(顔上端{actual_pos_ratio*100:.1f}%) / 座標:({x1},{y1}) / 検証OK"
                 return test_crop
             else:
-                return self.process_square_fallback(img, faces, safe_zone, target_w, target_h, f"検証NG({reason})")
+                return self.process_square_fallback(img, faces, safe_zone, target_w, target_h, f"クロップ後検証NG({reason})")
 
         # --- Multi Face ---
         group_min_x = min([f[0] for f in faces])
@@ -391,10 +394,11 @@ class ImageProcessor:
         is_valid, reason = self.verify_cropped_image(test_crop, len(faces))
 
         if is_valid:
-            self.last_process_log = f"【スマート複数】OK"
+            actual_pos_ratio = (top_y - y1) / crop_h
+            self.last_process_log = f"【マルチスマート】一番上から{actual_pos_ratio*100:.1f}% / 顔数:{len(faces)} / 座標:({x1},{y1}) / 検証OK"
             return test_crop
         else:
-            return self.process_square_fallback(img, faces, safe_zone, target_w, target_h, f"検証NG({reason})")
+            return self.process_square_fallback(img, faces, safe_zone, target_w, target_h, f"クロップ後検証NG({reason})")
 
     def create_drive_folder(self, folder_name, parent_id):
         file_metadata = {'name': folder_name, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [parent_id]}
@@ -404,7 +408,10 @@ class ImageProcessor:
     def upload_image_to_drive(self, pil_img, file_name, parent_id, fmt="JPEG"):
         output = io.BytesIO()
         save_fmt = "JPEG" if fmt.upper() == "JPG" else fmt.upper()
-        if save_fmt == "JPEG" and pil_img.mode == "RGBA": pil_img = pil_img.convert("RGB")
+        
+        # JPEG does not support transparency (RGBA, P, etc.). Convert to RGB if saving as JPEG.
+        if save_fmt == "JPEG" and pil_img.mode != "RGB":
+            pil_img = pil_img.convert("RGB")
         
         pil_img.save(output, format=save_fmt, quality=95)
         output.seek(0)
