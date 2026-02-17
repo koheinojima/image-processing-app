@@ -8,14 +8,14 @@ import clsx from 'clsx';
 export default function Home() {
   const [config, setConfig] = useState({
     project_name: "",
-    input_photo_folder_id: "",
-    input_logo_folder_id: "",
+    input_folder_id: "",
     output_root_folder_id: "",
     spreadsheet_id: "",
-    photo_width: 900,
-    photo_height: 600,
+    width: 900,
+    height: 600,
+    logo_safe_area: 0.8,
     force_contain_mode: false,
-    processing_mode: "both" // both, photos, logos
+    processing_mode: "photos" // photos, logos
   });
 
   const [status, setStatus] = useState('idle'); // idle, running, completed, error, stopped
@@ -215,9 +215,8 @@ export default function Home() {
                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">処理モード (Processing Mode)</label>
                 <div className="flex bg-slate-700/50 p-1 rounded-xl gap-1">
                   {[
-                    { id: 'both', label: '両方', desc: 'Both' },
-                    { id: 'photos', label: '写真', desc: 'Photos' },
-                    { id: 'logos', label: 'ロゴ', desc: 'Logos' }
+                    { id: 'photos', label: '写真モード', desc: 'Photo Mode' },
+                    { id: 'logos', label: 'ロゴモード', desc: 'Logo Mode' }
                   ].map((m) => (
                     <button
                       key={m.id}
@@ -236,28 +235,33 @@ export default function Home() {
               </div>
 
               <InputGroup label="プロジェクト名" placeholder="例: 2024_Spring_Campaign" value={config.project_name} onChange={v => setConfig({ ...config, project_name: v })} />
-              <InputGroup label="写真フォルダID" placeholder="Google Drive Folder ID" value={config.input_photo_folder_id} onChange={v => setConfig({ ...config, input_photo_folder_id: v })} />
-              <InputGroup label="ロゴフォルダID" placeholder="(任意) Google Drive Folder ID" value={config.input_logo_folder_id} onChange={v => setConfig({ ...config, input_logo_folder_id: v })} />
+              <InputGroup label="ソースフォルダID" placeholder="Google Drive Folder ID" value={config.input_folder_id} onChange={v => setConfig({ ...config, input_folder_id: v })} />
               <InputGroup label="出力先ルートフォルダID" placeholder="Google Drive Folder ID" value={config.output_root_folder_id} onChange={v => setConfig({ ...config, output_root_folder_id: v })} />
               <InputGroup label="スプレッドシートID" placeholder="(任意) Google Sheets ID" value={config.spreadsheet_id} onChange={v => setConfig({ ...config, spreadsheet_id: v })} />
 
               <div className="grid grid-cols-2 gap-4">
-                <InputGroup label="幅 (Width)" type="number" placeholder="900" value={config.photo_width} onChange={v => setConfig({ ...config, photo_width: Number(v) })} />
-                <InputGroup label="高さ (Height)" type="number" placeholder="600" value={config.photo_height} onChange={v => setConfig({ ...config, photo_height: Number(v) })} />
+                <InputGroup label="出力 幅 (Width)" type="number" placeholder="900" value={config.width} onChange={v => setConfig({ ...config, width: Number(v) })} />
+                <InputGroup label="出力 高さ (Height)" type="number" placeholder="600" value={config.height} onChange={v => setConfig({ ...config, height: Number(v) })} />
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
-                <input
-                  type="checkbox"
-                  id="force_contain"
-                  checked={config.force_contain_mode}
-                  onChange={e => setConfig({ ...config, force_contain_mode: e.target.checked })}
-                  className="w-5 h-5 rounded border-slate-600 text-indigo-500 focus:ring-indigo-500 bg-slate-700"
-                />
-                <label htmlFor="force_contain" className="text-sm font-medium text-slate-300 cursor-pointer">
-                  強制全体表示モード (クロップなし)
-                </label>
-              </div>
+              {config.processing_mode === 'logos' && (
+                <InputGroup label="セーフエリア比率" type="number" placeholder="0.8" value={config.logo_safe_area} onChange={v => setConfig({ ...config, logo_safe_area: Number(v) })} />
+              )}
+
+              {config.processing_mode === 'photos' && (
+                <div className="flex items-center gap-3 pt-2">
+                  <input
+                    type="checkbox"
+                    id="force_contain"
+                    checked={config.force_contain_mode}
+                    onChange={e => setConfig({ ...config, force_contain_mode: e.target.checked })}
+                    className="w-5 h-5 rounded border-slate-600 text-indigo-500 focus:ring-indigo-500 bg-slate-700"
+                  />
+                  <label htmlFor="force_contain" className="text-sm font-medium text-slate-300 cursor-pointer">
+                    強制全体表示モード (クロップなし)
+                  </label>
+                </div>
+              )}
             </div>
           </div>
 

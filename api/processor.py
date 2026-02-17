@@ -445,17 +445,14 @@ class ImageProcessor:
 
             records = []
              
-            mode = self.config.get("processing_mode", "both")
+            mode = self.config.get("processing_mode", "photos")
+            input_id = self.config.get("input_folder_id")
 
-            # Process Photos
-            if (mode == "both" or mode == "photos") and self.config["input_photo_folder_id"]:
-                self.log("写真フォルダを処理中...")
-                self.process_folder(self.config["input_photo_folder_id"], run_folder_id, "photos", records)
-
-            # Process Logos
-            if (mode == "both" or mode == "logos") and self.config["input_logo_folder_id"]:
-                self.log(f"ロゴフォルダをスキャン中 (ID: {self.config['input_logo_folder_id']})...")
-                self.process_folder(self.config["input_logo_folder_id"], run_folder_id, "logos", records)
+            if input_id:
+                self.log(f"ソースフォルダをスキャン中 (モード: {mode}, ID: {input_id})...")
+                self.process_folder(input_id, run_folder_id, mode, records)
+            else:
+                self.log("警告: ソースフォルダIDが指定されていません。")
 
             if records and worksheet:
                 worksheet.append_rows(records, value_input_option='USER_ENTERED')
@@ -496,6 +493,8 @@ class ImageProcessor:
 
         if type_name == "photos":
              self.total_files += len(files)
+        else: # logos also count towards progress in this unified flow
+             self.total_files += len(files)
 
         for i, f_info in enumerate(files):
             if self.stop_requested:
@@ -518,14 +517,17 @@ class ImageProcessor:
                 img = Image.open(fh)
 
                 # Process based on type
+                target_w = int(self.config["width"])
+                target_h = int(self.config["height"])
+
                 if type_name == "photos":
-                    res = self.process_photo_smart(img, int(self.config["photo_width"]), int(self.config["photo_height"]))
+                    res = self.process_photo_smart(img, target_w, target_h)
                     fmt = "JPEG"
                 else: # logos
                     res = self.process_logo_smart(
                         img, 
-                        int(self.config["logo_width"]), 
-                        int(self.config["logo_height"]),
+                        target_w, 
+                        target_h,
                         safe_area=float(self.config.get("logo_safe_area", 0.8)),
                         fmt="PNG"
                     )
