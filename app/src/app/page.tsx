@@ -101,7 +101,7 @@ export default function Home() {
     if (status === 'running' || (status === 'completed' && !resultLinks) || status === 'stopping') {
       interval = setInterval(async () => {
         try {
-          const res = await axios.get(`${baseUrl}/api/status`);
+          const res = await axios.get(`${baseUrl}/api/status`, { withCredentials: true });
 
           if (res.data.logs) {
             setLogs(res.data.logs);
@@ -147,7 +147,7 @@ export default function Home() {
       setLogs([]);
       setResultLinks(null);
       setProgress(null);
-      await axios.post(`${baseUrl}/api/start`, config);
+      await axios.post(`${baseUrl}/api/start`, config, { withCredentials: true });
     } catch (e) {
       console.error(e);
       setStatus('error');
@@ -157,7 +157,7 @@ export default function Home() {
 
   const stopProcess = async () => {
     try {
-      await axios.post(`${baseUrl}/api/stop`);
+      await axios.post(`${baseUrl}/api/stop`, {}, { withCredentials: true });
       setLogs(prev => [...prev, "中断リクエストを送信しました..."]);
     } catch (e) {
       console.error("Stop error", e);

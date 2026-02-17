@@ -71,18 +71,22 @@ processor_instance = None
 @app.get("/")
 def read_root(request: Request):
     origin = request.headers.get("origin")
+    redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI")
     print(f"DEBUG: Incoming request from origin: {origin}")
+    print(f"DEBUG: Current GOOGLE_REDIRECT_URI: {redirect_uri}")
     return {
         "status": "ok", 
         "message": "Image Processing API is running",
         "debug_origin": origin,
         "allowed_origins": origins,
-        "debug_redirect_uri": os.environ.get("GOOGLE_REDIRECT_URI")
+        "debug_redirect_uri": redirect_uri
     }
 
 @app.get("/api/auth/login")
 def login(request: Request):
     client_config = None
+    redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/callback")
+    print(f"DEBUG: Using redirect_uri for flow: {redirect_uri}")
     
     # Priority 1: env var (for production)
     env_creds = os.environ.get("GOOGLE_CLIENT_SECRET_JSON")
@@ -94,29 +98,29 @@ def login(request: Request):
             
     # Priority 2: local file (for dev)
     elif os.path.exists('credentials.json'):
-         client_config = None # Flow.from_client_secrets_file handles path, but here we want dict or path logic adjustment
-         # For simplicity, we stick to flow.from_client_secrets_file if path exists,
-         # OR flow.from_client_config if we have the dict.
          pass
     
     if env_creds and client_config:
         flow = Flow.from_client_config(
             client_config,
             scopes=SCOPES,
-            redirect_uri=os.environ.get("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/callback")
+            redirect_uri=redirect_uri
         )
     elif os.path.exists('credentials.json'):
          flow = Flow.from_client_secrets_file(
             'credentials.json',
             scopes=SCOPES,
-            redirect_uri=os.environ.get("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/callback")
+            redirect_uri=redirect_uri
         )
     else:
-        return {"error": "credentials.json not found and GOOGLE_CLIENT_SECRET_JSON not set"}
+        return {
+            "error": "credentials.json not found and GOOGLE_CLIENT_SECRET_JSON not set",
+            "debug_redirect_uri_used": redirect_uri
+        }
         
     authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
     request.session['state'] = state
-    return {"url": authorization_url}
+    return {"url": authorization_url, "debug_redirect_uri_used": redirect_uri}
 
 @app.get("/api/auth/callback")
 def auth_callback(request: Request, code: str, state: str):
