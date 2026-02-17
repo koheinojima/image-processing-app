@@ -175,13 +175,17 @@ def check_auth(request: Request):
 async def start_process(config: Config, background_tasks: BackgroundTasks, request: Request):
     global processor_instance
     
+    # Log session for debugging (safely)
+    session_keys = list(request.session.keys())
+    print(f"DEBUG: Session keys at /api/start: {session_keys}")
+    
     creds_data = request.session.get('credentials')
     if not creds_data:
-        # Fallback to local file if simple local run (or error)
-        # But for web flow, we strictly need this usually.
-        # We will allow processor to fallback to local file if not passed, 
-        # but warn here.
-        pass
+        print("ERROR: No credentials found in session at /api/start")
+        return {
+            "status": "error", 
+            "message": "ログインセッションが有効ではありません。一度ログアウト（ブラウザ更新）してログインし直してください。"
+        }
 
     if processor_instance and processor_instance.status == "running":
         return {"status": "error", "message": "Already running"}

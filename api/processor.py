@@ -55,17 +55,18 @@ class ImageProcessor:
             
             if not creds or not creds.valid:
                 if creds and creds.expired and creds.refresh_token:
-                    creds.refresh(Request())
-                else:
-                    if not os.path.exists('credentials.json'):
-        # Just pass if file missing, assuming creds passed via session for web flow
-                     if not self.credentials_data:
-                         raise Exception("No credentials provided and credentials.json not found.")
-                     return
-
-                    flow = InstalledAppFlow.from_client_secrets_file(
-                        'credentials.json', SCOPES)
-                    creds = flow.run_local_server(port=0)
+                    try:
+                        creds.refresh(Request())
+                    except Exception as e:
+                        self.log(f"Token refresh failed: {e}")
+                
+                if not creds:
+                    if not os.path.exists('credentials.json') and not self.credentials_data:
+                        raise Exception("認証情報が見つかりません。セッションが切れている可能性があります。")
+                    
+                    if os.path.exists('credentials.json'):
+                        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+                        creds = flow.run_local_server(port=0)
                 # Save the credentials for the next run (only in local mode)
                 with open('token.json', 'w') as token:
                     token.write(creds.to_json())
