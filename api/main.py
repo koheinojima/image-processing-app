@@ -124,7 +124,8 @@ def auth_callback(request: Request, code: str, state: str):
     }
     
     # Redirect back to frontend
-    return RedirectResponse(url="http://localhost:3000?authenticated=true")
+    frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+    return RedirectResponse(url=f"{frontend_url}?authenticated=true")
 
 @app.get("/api/auth/check")
 def check_auth(request: Request):

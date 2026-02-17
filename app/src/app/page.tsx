@@ -25,6 +25,8 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
   // Check auth on mount
   useEffect(() => {
     const checkAuth = async () => {
@@ -38,7 +40,7 @@ export default function Home() {
           return;
         }
 
-        const res = await axios.get('http://127.0.0.1:8000/api/auth/check', {
+        const res = await axios.get(`${baseUrl}/api/auth/check`, {
           withCredentials: true,
           timeout: 5000
         });
@@ -55,7 +57,7 @@ export default function Home() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/auth/login');
+      const res = await axios.get(`${baseUrl}/api/auth/login`);
       if (res.data.url) {
         window.location.href = res.data.url;
       } else {
@@ -91,7 +93,7 @@ export default function Home() {
     if (status === 'running' || (status === 'completed' && !resultLinks) || status === 'stopping') {
       interval = setInterval(async () => {
         try {
-          const res = await axios.get('http://127.0.0.1:8000/api/status');
+          const res = await axios.get(`${baseUrl}/api/status`);
 
           if (res.data.logs) {
             setLogs(res.data.logs);
@@ -137,7 +139,7 @@ export default function Home() {
       setLogs([]);
       setResultLinks(null);
       setProgress(null);
-      await axios.post('http://127.0.0.1:8000/api/start', config);
+      await axios.post(`${baseUrl}/api/start`, config);
     } catch (e) {
       console.error(e);
       setStatus('error');
@@ -147,7 +149,7 @@ export default function Home() {
 
   const stopProcess = async () => {
     try {
-      await axios.post('http://127.0.0.1:8000/api/stop');
+      await axios.post(`${baseUrl}/api/stop`);
       setLogs(prev => [...prev, "中断リクエストを送信しました..."]);
     } catch (e) {
       console.error("Stop error", e);
