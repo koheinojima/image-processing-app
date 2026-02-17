@@ -2,16 +2,17 @@ services:
   - type: web
     name: infinite-pulsar-api
     runtime: python
+    plan: free
     buildCommand: pip install -r api/requirements.txt
     startCommand: python3 -m uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: GOOGLE_CLIENT_SECRET_JSON
-        sync: false # User needs to set this in Dashboard
+        sync: false
       - key: GOOGLE_REDIRECT_URI
-        sync: false # User needs to set this in Dashboard
+        sync: false
       - key: FRONTEND_URL
-        sync: false # User needs to set this in Dashboard
+        sync: false
       - key: SECRET_KEY
         generateValue: true
