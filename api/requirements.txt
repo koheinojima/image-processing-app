@@ -11,3 +11,5 @@ google-api-python-client
 gspread
 python-dotenv
 itsdangerous
+gunicorn
+uvicorn[standard]
