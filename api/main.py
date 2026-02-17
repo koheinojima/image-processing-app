@@ -49,6 +49,23 @@ app.add_middleware(
     https_only=True
 )
 
+# Custom middleware to add "Partitioned" (CHIPS) attribute to session cookies
+# This is required for some browsers (like Firefox) to accept cross-site cookies
+@app.middleware("http")
+async def add_partitioned_cookie(request: Request, call_next):
+    response = await call_next(request)
+    # Find all Set-Cookie headers
+    cookie_headers = response.headers.getlist("set-cookie")
+    if cookie_headers:
+        # Clear existing and re-add with Partitioned attribute
+        # We target the session cookie (usually named "session")
+        del response.headers["set-cookie"]
+        for header in cookie_headers:
+            if "session=" in header and "; Partitioned" not in header:
+                header += "; Partitioned"
+            response.headers.append("set-cookie", header)
+    return response
+
 SCOPES = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/spreadsheets',
