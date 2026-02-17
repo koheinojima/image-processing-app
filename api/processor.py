@@ -409,11 +409,12 @@ class ImageProcessor:
         output = io.BytesIO()
         save_fmt = "JPEG" if fmt.upper() == "JPG" else fmt.upper()
         
-        # JPEG does not support transparency (RGBA, P, etc.). Convert to RGB if saving as JPEG.
         if save_fmt == "JPEG" and pil_img.mode != "RGB":
+            print(f"DEBUG: Converting {file_name} from {pil_img.mode} to RGB for JPEG saving.")
             pil_img = pil_img.convert("RGB")
         
-        pil_img.save(output, format=save_fmt, quality=95)
+        quality = int(self.config.get("quality", 95))
+        pil_img.save(output, format=save_fmt, quality=quality)
         output.seek(0)
         
         media = MediaIoBaseUpload(output, mimetype="image/png" if save_fmt=="PNG" else "image/jpeg", resumable=True)
@@ -517,12 +518,26 @@ class ImageProcessor:
                 while not done: _, done = downloader.next_chunk()
                 fh.seek(0)
                 img = Image.open(fh)
+                
+                # Robustly handle mode P (and others) immediately
+                if img.mode == "P":
+                    if "transparency" in img.info:
+                        img = img.convert("RGBA")
+                    else:
+                        img = img.convert("RGB")
+                elif img.mode == "LA":
+                    img = img.convert("RGBA")
+                elif img.mode == "L":
+                    img = img.convert("RGB")
 
                 # Process based on type
                 target_w = int(self.config["width"])
                 target_h = int(self.config["height"])
 
                 if type_name == "photos":
+                    # Photos MUST be RGB for JPEG
+                    if img.mode != "RGB":
+                        img = img.convert("RGB")
                     res = self.process_photo_smart(img, target_w, target_h)
                     fmt = "JPEG"
                 else: # logos

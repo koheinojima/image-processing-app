@@ -79,6 +79,7 @@ class Config(BaseModel):
     spreadsheet_id: str = ""
     width: int
     height: int
+    quality: int = 95
     logo_safe_area: float = 0.8
     force_contain_mode: bool = False
     processing_mode: str = "photos"
