@@ -1,0 +1,112 @@
+INFO:     Will watch for changes in these directories: ['/Users/koheinojima/.gemini/antigravity/playground/infinite-pulsar/api']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [11974] using StatReload
+INFO:     Started server process [11977]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:54343 - "GET /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54346 - "GET /api/auth/callback?state=Bv4i1EnsKBTnRuDxkyFEukZTBXIEAi&code=4/0AfrIepAJ7MTgl90FhYe-rbUEaYBal2UGmZLuem0LPDxC1Xz6sz3ZGQ9_D4jS6Pcy1J3ppw&scope=email%20profile%20https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/spreadsheets%20openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&authuser=0&hd=spincoaster.co.jp&prompt=consent HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:54611 - "OPTIONS /api/start HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "POST /api/start HTTP/1.1" 200 OK
+認証に成功しました。
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+写真フォルダを処理中...
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (1/7): ラッセル・モーリス(Russell Maurice)1.png
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (2/7): YUSUKE TAKAYAMA.JPG
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (3/7): DJ HASEBE.jpg
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (4/7): DR.PAY.jpg
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (5/7): Sam is Ohm.jpg
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (6/7): Dj Trystero.jpg
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (7/7): iz.jpg
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+処理が完了しました！
+INFO:     127.0.0.1:54611 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54691 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54703 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54704 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54707 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54718 - "GET /api/auth/callback?state=Bv4i1EnsKBTnRuDxkyFEukZTBXIEAi&code=4/0AfrIepB-pYadr75Q3I1Byc-UsvBDkwPwVWn0iel4MDPJwlE3p3P-m44wTWlVRGOyqOgO8A&scope=email%20profile%20https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/spreadsheets%20openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&authuser=0&hd=spincoaster.co.jp&prompt=consent HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:54732 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54733 - "GET /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54736 - "GET /api/auth/callback?state=Q5FK7zhdM5wqpY1ODlsu79jQZ6Nkcs&code=4/0AfrIepDhboJqKKnvSLGHxD6IkHhKga6-whzchAlbcKGeylk5_uBYwxhLOaI4OMThr7e19w&scope=email%20profile%20https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/spreadsheets%20openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&authuser=0&hd=spincoaster.co.jp&prompt=consent HTTP/1.1" 307 Temporary Redirect
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11977]
+INFO:     Started server process [12230]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [12230]
+INFO:     Started server process [12232]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'processor.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [12232]
+INFO:     Started server process [12257]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:54877 - "POST /api/start HTTP/1.1" 200 OK
+認証に成功しました。
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+写真フォルダを処理中...
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+処理中 (1/7): ラッセル・モーリス(Russell Maurice)1.png
+INFO:     127.0.0.1:54877 - "POST /api/stop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "POST /api/stop HTTP/1.1" 200 OK
+停止リクエストを受信しました。処理を中断します。
+INFO:     127.0.0.1:54877 - "POST /api/stop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+処理が中断されました。
+INFO:     127.0.0.1:54877 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55162 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55162 - "GET /api/auth/check HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55164 - "GET /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55168 - "GET /api/auth/callback?state=S8uq3SyJ7eOKPrk5aNq6LZ1vkkJaOk&code=4/0AfrIepANmyOHBO0hkbjN59Rp2LZnp5ApPWP5DPyQotthiKYuz7dl2a6Sc_v8rD_d6aMA2w&scope=email%20profile%20https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/spreadsheets%20openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile&authuser=0&hd=spincoaster.co.jp&prompt=consent HTTP/1.1" 307 Temporary Redirect

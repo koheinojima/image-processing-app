@@ -1,0 +1,31 @@
+# General
+.DS_Store
+.env
+.nvm/
+
+.nvm/
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Node/JS
+node_modules/
+.next/
+dist/
+build/
+
+# Google Auth (CRITICAL to ignore)
+api/credentials.json
+api/token.json
+credentials.json
+token.json
+client_secret_*.json
+
+# Artifacts
+.gemini/
